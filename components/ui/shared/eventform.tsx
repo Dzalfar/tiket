@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import EventFormSchema from '@/lib/validator'
 import { eventDefaultValues } from '@/constants'
+import Dropdown from './dropdown'
 
 
 
@@ -60,7 +61,7 @@ const EventForm: React.FC<EventFormProps> = ({ userId, type }) => {
             render={({ field }) => (
             <FormItem className='w-f'>
                  <FormControl>
-                <Input placeholder="event title" {...field}  className='input-field' />
+                <Dropdown onChangeHandler={field.onChange} value = {field.value}/>
                 </FormControl>
                 <FormMessage />
             </FormItem>
