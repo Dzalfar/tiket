@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import {
     Select,
     SelectContent,
@@ -18,6 +19,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
+import { createCategory, getAllCategories } from '@/lib/actions/category.action'
   
   
 
@@ -26,11 +28,26 @@ type DropdownProps = {
     onChangeHandler: () => void
 }
 const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
-    const [categories, setCategories] = useState<ICategory[]>([
-        { _id: '1', name: 'category 1' },
-        { _id: '2', name: 'category 2' },
-        { _id: '3', name: 'category 3' },
-    ])
+    const [categories, setCategories] = useState<ICategory[]>([])
+    const [newCategory, setNewCategory] = useState('')
+    const handleAddCategory =  () => {
+      createCategory({
+        categoryName: newCategory.trim()
+      })
+        .then((category) => {
+        setCategories((prevState) => [...prevState, category]);
+      })
+  }
+  
+  useEffect(() => {
+    const getCategories = async () => {
+      const categoryList = await getAllCategories();
+
+      categoryList && setCategories(categoryList as ICategory[]);
+    }
+
+    getCategories();
+   },[])
 
   return (
     <Select onOpenChange={onChangeHandler} defaultValue={value} >
@@ -44,10 +61,10 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
         </SelectItem>
     ))}
         <AlertDialog>
-    <AlertDialogTrigger>Open</AlertDialogTrigger>
+    <AlertDialogTrigger>add new category</AlertDialogTrigger>
     <AlertDialogContent>
         <AlertDialogHeader>
-        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+        <AlertDialogTitle>New Category</AlertDialogTitle>
         <AlertDialogDescription>
             This action cannot be undone. This will permanently delete your account
             and remove your data from our servers.
